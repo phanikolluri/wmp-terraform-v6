@@ -1,10 +1,6 @@
-variable "components" {
-  default = {
-    frontend = "",
-    postgresql = "",
-    auth-service = "",
-    portfolio-service = "",
-    analytics-service = "",
-  }
-}
+variable "env" {}
+variable "dns_domain" {}
+variable "databases" {}
+variable "apps" {}
+
 

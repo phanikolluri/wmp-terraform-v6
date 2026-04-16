@@ -1,39 +1,25 @@
-module "network" {
-  source = "./modules/network"
+module "databases" {
+  for_each = var.databases
+  source = "./modules/component"
+
+  dns_domain = var.dns_domain
+  component = each.key
+  env = var.env
+  instance_type = each.value["instance_type"]
+  ports =  each.value["ports"]
+}
+
+module "apps" {
+  for_each = var.apps
+  source = "./modules/component"
   
-  for_each = var.components
+  dns_domain = var.dns_domain
   component = each.key
-  env = "dev"
+  env = var.env
+  instance_type = each.value["instance_type"]
+  ports =  each.value["ports"]
 }
 
-module "compute" {
-  source = "./modules/compute"
-
-  for_each = var.components
-  component = each.key
-  env = "dev"
-  sg_id = module.network[each.key].sg_id
-}
-
-
-module "dns" {
-  source = "./modules/dns"
-
-  for_each = var.components
-  component = each.key
-  env = "dev"
-  private_ip =  module.compute[each.key].private_ip
-}
-
-module "ansible" {
-  source = "./modules/ansible"
-
-  depends_on = [module.dns]
-  for_each = var.components
-  component = each.key
-  env = "dev"
-  public_ip =  module.compute[each.key].public_ip
-}
 
 
 
